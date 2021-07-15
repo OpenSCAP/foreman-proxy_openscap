@@ -1,7 +1,0 @@
-#!/usr/bin/env ruby
-path = File.join(File.dirname(File.expand_path(__FILE__)), '..', 'lib')
-$:.unshift(path) if File.exist? path
-
-require 'smart_proxy_openscap/policy_guide'
-
-Proxy::OpenSCAP::PolicyGuide.new.generate_guide *ARGV

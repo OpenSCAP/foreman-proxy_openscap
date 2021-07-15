@@ -20,6 +20,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rack-test')
   s.add_development_dependency('mocha')
   s.add_development_dependency('webmock')
-  s.add_dependency 'openscap', '~> 0.4.7'
   s.add_dependency 'openscap_parser', '~> 1.0.2'
 end

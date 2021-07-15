@@ -107,11 +107,11 @@ module Proxy::OpenSCAP
 
     get "/arf/:id/:cname/:date/:digest/html" do
       begin
-        Proxy::OpenSCAP::OpenscapHtmlGenerator.new(params[:cname], params[:id], params[:date], params[:digest]).get_html
+        Proxy::OpenSCAP::ArfHtml.new.generate(params[:cname], params[:id], params[:date], params[:digest])
       rescue FileNotFound => e
         log_halt 500, "Could not find requested file, #{e.message}"
-      rescue OpenSCAPException => e
-        log_halt 500, "Could not generate report in HTML"
+      rescue ReportDecompressError => e
+        log_halt 500, e.message
       end
     end
 
@@ -183,10 +183,11 @@ module Proxy::OpenSCAP
 
     post "/scap_content/guide/?:policy?" do
       begin
-        Proxy::OpenSCAP::PolicyParser.new(params[:policy]).guide(request.body.string)
+        html = Proxy::OpenSCAP::PolicyGuide.new.generate_guide(request.body.string, params[:policy])
+        { :html => html }.to_json
       rescue *HTTP_ERRORS => e
         log_halt 500, e.message
-      rescue StandardError => e
+      rescue StandardError, OpenSCAPException => e
         log_halt 500, "Error occurred: #{e.message}"
       end
     end
